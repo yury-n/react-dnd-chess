@@ -3,7 +3,7 @@ import { ItemTypes } from './Constants';
 import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 
-export class Piece extends Component {
+class Piece extends Component {
 
     render() {
         let utf8symbol = null;
@@ -29,7 +29,6 @@ export class Piece extends Component {
         );
     }
 }
-
 Piece.propTypes = {
     id: PropTypes.number,
     type: PropTypes.string.isRequired
@@ -56,7 +55,6 @@ class DraggablePiece extends Component {
         );
     }
 }
-
 DraggablePiece.propTypes = {...Piece.propTypes, ...{
     connectDragSource: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired
@@ -77,4 +75,9 @@ function collect(connect, monitor) {
     }
 }
 
-export default DragSource(ItemTypes.PIECE, sourceSpecs, collect)(DraggablePiece);
+const DraggablePieceDnD = DragSource(ItemTypes.PIECE, sourceSpecs, collect)(DraggablePiece);
+
+export {
+    Piece,
+    DraggablePieceDnD as DraggablePiece
+}

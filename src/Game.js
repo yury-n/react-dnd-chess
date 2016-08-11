@@ -8,13 +8,11 @@ let piecePositions = [
     {'type': 'knight', x: 6, y: 7},
     {'type': 'rook', x: 7, y: 7}
 ];
-
 for (let i = 0; i < 8; i++) {
     piecePositions.push({'type': 'pawn', x: i, y: 6});
 }
 
 let observer = null;
-
 function emitChange() {
     observer(piecePositions);
 }
@@ -25,6 +23,41 @@ export function observe(o) {
     }
     observer = o;
     emitChange();
+}
+
+export function movePiece(itemid, toX, toY) {
+    piecePositions[itemid]['x'] = toX;
+    piecePositions[itemid]['y'] = toY;
+    emitChange();
+}
+
+export function canMovePiece(itemid, toX, toY) {
+
+    if (isSquareTaken(toX, toY)) {
+        return false;
+    }
+
+    const {x: pieceX, y: pieceY, type: pieceType} = piecePositions[itemid];
+
+    const dx = toX - pieceX;
+    const dy = toY - pieceY;
+
+    switch (pieceType) {
+        case 'pawn':
+            return (dy === -1 && pieceX === toX) || (pieceY === 6 && toY == 4 && pieceX === toX);
+        case 'knight':
+            return (Math.abs(dx) === 2 && Math.abs(dy) === 1) ||
+                (Math.abs(dx) === 1 && Math.abs(dy) === 2);
+        case 'king':
+            return (Math.abs(dx) <= 1 && Math.abs(dy) <= 1);
+        case 'rook':
+            return canMoveRook(itemid, toX, toY);
+        case 'bishop':
+            return canMoveBishop(itemid, toX, toY);
+        case 'queen':
+            // qeeen can move both like rook and like bishop
+            return (canMoveRook(itemid, toX, toY) || canMoveBishop(itemid, toX, toY));
+    }
 }
 
 function isSquareTaken(x, y) {
@@ -53,34 +86,8 @@ function doesRouteCrossOtherPieces(checkRouteSquares) {
     return routeCrossesOtherPieces;
 }
 
-export function canMovePiece(itemid, toX, toY) {
-
-    if (isSquareTaken(toX, toY)) {
-        return false;
-    }
-
-    const {x: pieceX, y: pieceY, type: pieceType} = piecePositions[itemid];
-
-    const dx = toX - pieceX;
-    const dy = toY - pieceY;
-
-    if (pieceType == 'knight') {
-        return (Math.abs(dx) === 2 && Math.abs(dy) === 1) ||
-               (Math.abs(dx) === 1 && Math.abs(dy) === 2);
-    } else if (pieceType == 'pawn') {
-        return (dy === -1 && pieceX === toX) || (pieceY === 6 && toY == 4 && pieceX === toX);
-    } else if (pieceType == 'rook') {
-        return canMoveRook(itemid, toX, toY);
-    } else if (pieceType == 'king') {
-        return (Math.abs(dx) <= 1 && Math.abs(dy) <= 1);
-    } else if (pieceType == 'bishop') {
-        return canMoveBishop(itemid, toX, toY);
-    } else if (pieceType == 'queen') {
-        return canMoveRook(itemid, toX, toY) || canMoveBishop(itemid, toX, toY);
-    }
-}
-
 function canMoveBishop(itemid, toX, toY) {
+
     const {x: pieceX, y: pieceY} = piecePositions[itemid];
 
     const dx = toX - pieceX;
@@ -137,10 +144,4 @@ function canMoveRook(itemid, toX, toY) {
     }
 
     return !doesRouteCrossOtherPieces(checkRouteSquares);
-}
-
-export function movePiece(itemid, toX, toY) {
-    piecePositions[itemid]['x'] = toX;
-    piecePositions[itemid]['y'] = toY;
-    emitChange();
 }

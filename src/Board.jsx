@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import CustomDragLayer from './CustomDragLayer';
 import BoardSquare from './BoardSquare';
-import Piece from './Piece';
+import { DraggablePiece as Piece } from './Piece';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
@@ -57,7 +57,6 @@ class Board extends Component {
         )
     }
 }
-
 Board.propTypes = {
     piecePositions: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired
 };

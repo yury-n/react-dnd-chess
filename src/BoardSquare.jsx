@@ -41,7 +41,6 @@ class BoardSquare extends Component {
         );
     }
 }
-
 BoardSquare.propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,

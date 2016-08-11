@@ -52,7 +52,6 @@ class CustomDragLayer extends Component {
         );
     }
 }
-
 CustomDragLayer.propTypes = {
     item: PropTypes.object,
     itemType: PropTypes.string,
